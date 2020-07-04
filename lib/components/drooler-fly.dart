@@ -5,6 +5,7 @@ import 'dart:ui';
 
 
 class DroolerFly extends Fly {
+  double get speed => game.tileSize * 1.5;
   DroolerFly(LingaGame game, double x, double y) : super(game) {
     flyRect = Rect.fromLTWH(x, y, game.tileSize * 1.5, game.tileSize * 1.5);
     flyingSprite = List();

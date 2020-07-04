@@ -5,6 +5,8 @@ import 'package:linga/components/fly.dart';
 import 'package:linga/linga-game.dart';
 
 class AgileFly extends Fly {
+  double get speed => game.tileSize * 5;
+
   AgileFly(LingaGame game, double x, double y) : super(game) {
     flyRect = Rect.fromLTWH(x, y, game.tileSize * 1.5, game.tileSize * 1.5);
     flyingSprite = List();
