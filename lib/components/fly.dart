@@ -1,8 +1,10 @@
 import 'dart:ui';
+import 'package:flame/game/base_game.dart';
+import 'package:flame/gestures.dart';
 import 'package:linga/linga-game.dart';
 import 'package:flame/sprite.dart';
 
-class Fly {
+class Fly extends BaseGame with TapDetector{
   final LingaGame game;
   Rect flyRect;
   bool isDead = false;
@@ -49,15 +51,14 @@ class Fly {
     }
   }
 
-  void onTapDown() {
-    isDead = true;
-    game.spawnFly();
-  }
-
   void setTargetLocation() {
     double x = game.rnd.nextDouble() * (game.screenSize.width - (game.tileSize * 2.025));
     double y = game.rnd.nextDouble() * (game.screenSize.height - (game.tileSize * 2.025));
     targetLocation = Offset(x, y);
   }
 
+  @override
+  void onTapDown(details) {
+    isDead = true;
+  }
 }

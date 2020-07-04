@@ -4,13 +4,21 @@ import 'package:flame/flame.dart';
 import 'package:flame/gestures.dart';
 import 'package:linga/components/fly.dart';
 import 'dart:math';
-import 'package:flutter/gestures.dart';
 import 'package:linga/components/backyard.dart';
 import 'package:linga/components/house-fly.dart';
 import 'package:linga/components/agile-fly.dart';
 import 'package:linga/components/drooler-fly.dart';
 import 'package:linga/components/hungry-fly.dart';
 import 'package:linga/components/macho-fly.dart';
+import 'package:linga/components/start-button.dart';
+import 'package:linga/view.dart';
+import 'package:linga/views/home-view.dart';
+import 'package:linga/views/lost-view.dart';
+import 'package:linga/controllers/spawner.dart';
+import 'package:linga/components/credits-button.dart';
+import 'package:linga/components/help-button.dart';
+import 'package:linga/views/help-view.dart';
+import 'package:linga/views/credits-view.dart';
 
 class LingaGame extends BaseGame with TapDetector {
   Size screenSize;
@@ -18,6 +26,15 @@ class LingaGame extends BaseGame with TapDetector {
   List<Fly> flies;
   Random rnd;
   Backyard background;
+  View activeView = View.home;
+  HomeView homeView;
+  StartButton startButton;
+  LostView lostView;
+  FlySpawner spawner;
+  HelpButton helpButton;
+  CreditsButton creditsButton;
+  HelpView helpView;
+  CreditsView creditsView;
 
   LingaGame(){
     initialize();
@@ -28,8 +45,16 @@ class LingaGame extends BaseGame with TapDetector {
     rnd = Random();
     resize(await Flame.util.initialDimensions());
     background = Backyard(this);
+    homeView = HomeView(this);
+    startButton = StartButton(this);
+    lostView = LostView(this);
+    spawner = FlySpawner(this);
+    helpButton = HelpButton(this);
+    creditsButton = CreditsButton(this);
+    helpView = HelpView(this);
+    creditsView = CreditsView(this);
 
-    spawnFly();
+
   }
   void spawnFly() {
     double x = rnd.nextDouble() * (screenSize.width - (tileSize * 2.025));
@@ -55,33 +80,79 @@ class LingaGame extends BaseGame with TapDetector {
 
   void render(Canvas canvas) {
     background.render(canvas);
-
     flies.forEach((Fly fly) => fly.render(canvas));
+    if (activeView == View.home) homeView.render(canvas);
+    if (activeView == View.home || activeView == View.lost) {
+      startButton.render(canvas);
+      helpButton.render(canvas);
+      creditsButton.render(canvas);
+    }
+    if (activeView == View.lost) lostView.render(canvas);
+    if (activeView == View.help) helpView.render(canvas);
+    if (activeView == View.credits) creditsView.render(canvas);
   }
 
   void update(double t) {
     flies.forEach((Fly fly) => fly.update(t));
     flies.removeWhere((Fly fly) => fly.isOffScreen);
+    spawner.update(t);
   }
 
   void resize(Size size) {
     screenSize = size;
     tileSize = screenSize.width / 9;
   }
-//  void onTapDown(TapDownDetails d) {
-//    flies.forEach((Fly fly) {
-//      if (fly.flyRect.contains(d.globalPosition)) {
-//        fly.onTapDown();
-//      }
-//    });
-//  }
 
   @override
   void onTapDown(details) {
+    bool isHandled = false;
+    if (!isHandled && startButton.rect.contains(details.globalPosition)) {
+      if (activeView == View.home || activeView == View.lost) {
+        startButton.onTapDown();
+        isHandled = true;
+      }
+    }
+    if (!isHandled) {
+      bool didHitAFly = false;
+
+      flies.forEach((Fly fly) {
+        if (fly.flyRect.contains(details.globalPosition)) {
+          fly.onTapDown(details);
+          isHandled = true;
+          didHitAFly = true;
+
+        }
+      });
+      if (activeView == View.playing && !didHitAFly) {
+        activeView = View.lost;
+      }
+    }
     flies.forEach((Fly fly) {
       if (fly.flyRect.contains(details.globalPosition)) {
-        fly.onTapDown();
+        fly.onTapDown(details);
       }
     });
+    // help button
+    if (!isHandled && helpButton.rect.contains(details.globalPosition)) {
+      if (activeView == View.home || activeView == View.lost) {
+        helpButton.onTapDown();
+        isHandled = true;
+      }
+    }
+
+// credits button
+    if (!isHandled && creditsButton.rect.contains(details.globalPosition)) {
+      if (activeView == View.home || activeView == View.lost) {
+        creditsButton.onTapDown();
+        isHandled = true;
+      }
+    }
+
+    if (!isHandled) {
+      if (activeView == View.help || activeView == View.credits) {
+        activeView = View.home;
+        isHandled = true;
+      }
+    }
   }
 }

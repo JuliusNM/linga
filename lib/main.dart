@@ -12,10 +12,10 @@ void main() async {
   await flameUtil.setOrientation(DeviceOrientation.portraitUp);
 
   LingaGame game = LingaGame();
-  runApp(game.widget);
   TapGestureRecognizer tapper = TapGestureRecognizer();
   tapper.onTapDown = game.onTapDown;
-//  flameUtil.addGestureRecognizer(tapper);
+  runApp(game.widget);
+
 
   Flame.images.loadAll(<String>[
     'bg/backyard.png',
@@ -34,6 +34,13 @@ void main() async {
     'flies/macho-fly-1.png',
     'flies/macho-fly-2.png',
     'flies/macho-fly-dead.png',
+    'bg/lose-splash.png',
+    'branding/title.png',
+    'ui/dialog-credits.png',
+    'ui/dialog-help.png',
+    'ui/icon-credits.png',
+    'ui/icon-help.png',
+    'ui/start-button.png',
   ]);
 
 }
