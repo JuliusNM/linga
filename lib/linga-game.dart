@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flame/game.dart';
 import 'package:flame/flame.dart';
+import 'package:flame/gestures.dart';
 import 'package:linga/components/fly.dart';
 import 'dart:math';
 import 'package:flutter/gestures.dart';
@@ -11,7 +12,7 @@ import 'package:linga/components/drooler-fly.dart';
 import 'package:linga/components/hungry-fly.dart';
 import 'package:linga/components/macho-fly.dart';
 
-class LingaGame extends Game {
+class LingaGame extends BaseGame with TapDetector {
   Size screenSize;
   double tileSize;
   List<Fly> flies;
@@ -67,9 +68,18 @@ class LingaGame extends Game {
     screenSize = size;
     tileSize = screenSize.width / 9;
   }
-  void onTapDown(TapDownDetails d) {
+//  void onTapDown(TapDownDetails d) {
+//    flies.forEach((Fly fly) {
+//      if (fly.flyRect.contains(d.globalPosition)) {
+//        fly.onTapDown();
+//      }
+//    });
+//  }
+
+  @override
+  void onTapDown(details) {
     flies.forEach((Fly fly) {
-      if (fly.flyRect.contains(d.globalPosition)) {
+      if (fly.flyRect.contains(details.globalPosition)) {
         fly.onTapDown();
       }
     });

@@ -15,7 +15,7 @@ void main() async {
   runApp(game.widget);
   TapGestureRecognizer tapper = TapGestureRecognizer();
   tapper.onTapDown = game.onTapDown;
-  flameUtil.addGestureRecognizer(tapper);
+//  flameUtil.addGestureRecognizer(tapper);
 
   Flame.images.loadAll(<String>[
     'bg/backyard.png',
