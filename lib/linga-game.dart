@@ -19,6 +19,10 @@ import 'package:linga/components/credits-button.dart';
 import 'package:linga/components/help-button.dart';
 import 'package:linga/views/help-view.dart';
 import 'package:linga/views/credits-view.dart';
+import 'package:linga/components/score-display.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:linga/components/highscore-display.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class LingaGame extends BaseGame with TapDetector {
   Size screenSize;
@@ -35,8 +39,16 @@ class LingaGame extends BaseGame with TapDetector {
   CreditsButton creditsButton;
   HelpView helpView;
   CreditsView creditsView;
+  ScoreDisplay scoreDisplay;
+  HighscoreDisplay highscoreDisplay;
+  AudioPlayer homeBGM;
+  AudioPlayer playingBGM;
 
-  LingaGame(){
+
+  int score;
+  final SharedPreferences storage;
+
+  LingaGame(this.storage){
     initialize();
   }
 
@@ -53,9 +65,31 @@ class LingaGame extends BaseGame with TapDetector {
     creditsButton = CreditsButton(this);
     helpView = HelpView(this);
     creditsView = CreditsView(this);
+    scoreDisplay = ScoreDisplay(this);
+    highscoreDisplay = HighscoreDisplay(this);
+    score = 0;
+
+    homeBGM = await Flame.audio.loop('bgm/home.mp3', volume: .25);
+    homeBGM.pause();
+    playingBGM = await Flame.audio.loop('bgm/playing.mp3', volume: .25);
+    playingBGM.pause();
+
+    playHomeBGM();
 
 
   }
+  void playHomeBGM() {
+    playingBGM.pause();
+    playingBGM.seek(Duration.zero);
+    homeBGM.resume();
+  }
+
+  void playPlayingBGM() {
+    homeBGM.pause();
+    homeBGM.seek(Duration.zero);
+    playingBGM.resume();
+  }
+
   void spawnFly() {
     double x = rnd.nextDouble() * (screenSize.width - (tileSize * 2.025));
     double y = rnd.nextDouble() * (screenSize.height - (tileSize * 2.025));
@@ -80,6 +114,8 @@ class LingaGame extends BaseGame with TapDetector {
 
   void render(Canvas canvas) {
     background.render(canvas);
+    highscoreDisplay.render(canvas);
+    if (activeView == View.playing) scoreDisplay.render(canvas);
     flies.forEach((Fly fly) => fly.render(canvas));
     if (activeView == View.home) homeView.render(canvas);
     if (activeView == View.home || activeView == View.lost) {
@@ -96,6 +132,7 @@ class LingaGame extends BaseGame with TapDetector {
     flies.forEach((Fly fly) => fly.update(t));
     flies.removeWhere((Fly fly) => fly.isOffScreen);
     spawner.update(t);
+    if (activeView == View.playing) scoreDisplay.update(t);
   }
 
   void resize(Size size) {
@@ -124,6 +161,8 @@ class LingaGame extends BaseGame with TapDetector {
         }
       });
       if (activeView == View.playing && !didHitAFly) {
+        Flame.audio.play('sfx/haha' + (rnd.nextInt(5) + 1).toString() + '.ogg');
+        playHomeBGM();
         activeView = View.lost;
       }
     }

@@ -3,6 +3,10 @@ import 'package:flame/game/base_game.dart';
 import 'package:flame/gestures.dart';
 import 'package:linga/linga-game.dart';
 import 'package:flame/sprite.dart';
+import 'package:linga/view.dart';
+import 'package:linga/components/callout.dart';
+import 'package:flame/flame.dart';
+
 
 class Fly extends BaseGame with TapDetector{
   final LingaGame game;
@@ -14,15 +18,20 @@ class Fly extends BaseGame with TapDetector{
   double flyingSpriteIndex = 0;
   double get speed => game.tileSize * 3;
   Offset targetLocation;
+  Callout callout;
 
   Fly(this.game){
     setTargetLocation();
+    callout = Callout(this);
   }
 
   void render(Canvas c) {
     if (isDead) {
       deadSprite.renderRect(c, flyRect.inflate(2));
     } else {
+      if (game.activeView == View.playing) {
+        callout.render(c);
+      }
       flyingSprite[flyingSpriteIndex.toInt()].renderRect(c, flyRect.inflate(2));
     }
   }
@@ -35,6 +44,7 @@ class Fly extends BaseGame with TapDetector{
       }
     }
     else {
+      callout.update(t);
       flyingSpriteIndex += 30 * t;
       if (flyingSpriteIndex >= 2) {
         flyingSpriteIndex -= 2;
@@ -59,6 +69,17 @@ class Fly extends BaseGame with TapDetector{
 
   @override
   void onTapDown(details) {
-    isDead = true;
+    if (!isDead) {
+      Flame.audio.play('sfx/ouch' + (game.rnd.nextInt(11) + 1).toString() + '.ogg');
+      isDead = true;
+
+      if (game.activeView == View.playing) {
+        game.score += 1;
+        if (game.score > (game.storage.getInt('highscore') ?? 0)) {
+          game.storage.setInt('highscore', game.score);
+          game.highscoreDisplay.updateHighscore();
+        }
+      }
+    }
   }
 }
