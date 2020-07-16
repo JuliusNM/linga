@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flame/sprite.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:linga/components/fly.dart';
-import 'package:flame/flame.dart';
 
 import '../view.dart';
 
@@ -38,8 +37,7 @@ class Callout {
     if (fly.game.activeView == View.playing) {
       value = value - .5 * t;
       if (value <= 0) {
-        Flame.audio.play('sfx/haha' + (fly.game.rnd.nextInt(5) + 1).toString() + '.ogg');
-        fly.game.playHomeBGM();
+//        Flame.audio.play('sfx/haha' + (fly.game.rnd.nextInt(5) + 1).toString() + '.ogg');
         fly.game.activeView = View.lost;
       }
     }
@@ -60,5 +58,8 @@ class Callout {
       rect.center.dx - (tp.width / 2),
       rect.top + (rect.height * .4) - (tp.height / 2),
     );
+    if (fly.game.soundButton.isEnabled) {
+//      Flame.audio.play('sfx/haha' + (fly.game.rnd.nextInt(5) + 1).toString() + '.ogg');
+    }
   }
 }

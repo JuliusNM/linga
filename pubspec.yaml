@@ -40,6 +40,16 @@ flutter:
     - assets/images/flies/macho-fly-1.png
     - assets/images/flies/macho-fly-2.png
     - assets/images/flies/macho-fly-dead.png
+    - assets/images/flies/jump-1.png
+    - assets/images/flies/jump-2.png
+    - assets/images/flies/jump-3.png
+    - assets/images/flies/jump-4.png
+    - assets/images/flies/jump-5.png
+    - assets/images/flies/jump-6.png
+    - assets/images/flies/jump-7.png
+    - assets/images/flies/jump-8.png
+    - assets/images/flies/jump-9.png
+    - assets/images/flies/jump-10.png
     - assets/images/bg/lose-splash.png
     - assets/images/branding/title.png
     - assets/images/ui/dialog-credits.png
@@ -64,8 +74,6 @@ flutter:
     - assets/audio/sfx/ouch9.ogg
     - assets/audio/sfx/ouch10.ogg
     - assets/audio/sfx/ouch11.ogg
-    - assets/audio/bgm/home.mp3
-    - assets/audio/bgm/playing.mp3
     - assets/audio/sfx/haha1.ogg
     - assets/images/ui/icon-music-disabled.png
     - assets/images/ui/icon-music-enabled.png

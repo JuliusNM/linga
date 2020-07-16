@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flame/flame.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'bgm.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,11 +17,20 @@ void main() async {
   TapGestureRecognizer tapper = TapGestureRecognizer();
   tapper.onTapDown = game.onTapDown;
   runApp(game.widget);
-  BGM.attachWidgetBindingListener();
 
   Flame.images.loadAll(<String>[
     'bg/backyard.png',
     'flies/agile-fly-1.png',
+    'flies/jump-1.png',
+    'flies/jump-2.png',
+    'flies/jump-3.png',
+    'flies/jump-4.png',
+    'flies/jump-5.png',
+    'flies/jump-6.png',
+    'flies/jump-7.png',
+    'flies/jump-8.png',
+    'flies/jump-9.png',
+    'flies/jump-10.png',
     'flies/agile-fly-2.png',
     'flies/agile-fly-dead.png',
     'flies/drooler-fly-1.png',
@@ -59,11 +67,13 @@ void main() async {
     'sfx/ouch7.ogg',
     'sfx/ouch8.ogg',
     'sfx/ouch9.ogg',
+    'sfx/swish-5.wav',
     'sfx/ouch10.ogg',
     'sfx/ouch11.ogg',
-    'bgm/home.mp3',
-    'bgm/playing.mp3',
     'sfx/haha1.ogg',
+    'ui/icon-music-disabled.png',
+    'ui/icon-music-enabled.png',
+    'ui/icon-sound-disabled.png',
+    'ui/icon-sound-enabled.png',
   ]);
-
 }

@@ -22,7 +22,8 @@ import 'package:linga/views/credits-view.dart';
 import 'package:linga/components/score-display.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:linga/components/highscore-display.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:linga/components/music-button.dart';
+import 'package:linga/components/sound-button.dart';
 
 class LingaGame extends BaseGame with TapDetector {
   Size screenSize;
@@ -41,14 +42,13 @@ class LingaGame extends BaseGame with TapDetector {
   CreditsView creditsView;
   ScoreDisplay scoreDisplay;
   HighscoreDisplay highscoreDisplay;
-  AudioPlayer homeBGM;
-  AudioPlayer playingBGM;
-
+  MusicButton musicButton;
+  SoundButton soundButton;
 
   int score;
   final SharedPreferences storage;
 
-  LingaGame(this.storage){
+  LingaGame(this.storage) {
     initialize();
   }
 
@@ -67,27 +67,9 @@ class LingaGame extends BaseGame with TapDetector {
     creditsView = CreditsView(this);
     scoreDisplay = ScoreDisplay(this);
     highscoreDisplay = HighscoreDisplay(this);
+    musicButton = MusicButton(this);
+    soundButton = SoundButton(this);
     score = 0;
-
-    homeBGM = await Flame.audio.loop('bgm/home.mp3', volume: .25);
-    homeBGM.pause();
-    playingBGM = await Flame.audio.loop('bgm/playing.mp3', volume: .25);
-    playingBGM.pause();
-
-    playHomeBGM();
-
-
-  }
-  void playHomeBGM() {
-    playingBGM.pause();
-    playingBGM.seek(Duration.zero);
-    homeBGM.resume();
-  }
-
-  void playPlayingBGM() {
-    homeBGM.pause();
-    homeBGM.seek(Duration.zero);
-    playingBGM.resume();
   }
 
   void spawnFly() {
@@ -124,6 +106,8 @@ class LingaGame extends BaseGame with TapDetector {
       creditsButton.render(canvas);
     }
     if (activeView == View.lost) lostView.render(canvas);
+    musicButton.render(canvas);
+    soundButton.render(canvas);
     if (activeView == View.help) helpView.render(canvas);
     if (activeView == View.credits) creditsView.render(canvas);
   }
@@ -157,12 +141,9 @@ class LingaGame extends BaseGame with TapDetector {
           fly.onTapDown(details);
           isHandled = true;
           didHitAFly = true;
-
         }
       });
       if (activeView == View.playing && !didHitAFly) {
-        Flame.audio.play('sfx/haha' + (rnd.nextInt(5) + 1).toString() + '.ogg');
-        playHomeBGM();
         activeView = View.lost;
       }
     }
@@ -179,7 +160,7 @@ class LingaGame extends BaseGame with TapDetector {
       }
     }
 
-// credits button
+    // credits button
     if (!isHandled && creditsButton.rect.contains(details.globalPosition)) {
       if (activeView == View.home || activeView == View.lost) {
         creditsButton.onTapDown();
@@ -192,6 +173,17 @@ class LingaGame extends BaseGame with TapDetector {
         activeView = View.home;
         isHandled = true;
       }
+    }
+//     music button
+    if (!isHandled && musicButton.rect.contains(details.globalPosition)) {
+      musicButton.onTapDown();
+      isHandled = true;
+    }
+
+    // sound button
+    if (!isHandled && soundButton.rect.contains(details.globalPosition)) {
+      soundButton.onTapDown();
+      isHandled = true;
     }
   }
 }
